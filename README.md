@@ -30,7 +30,7 @@ use email or GitHub issues. We would like not to handle these in class.
  - Lab: Setup
 
 [Week 2: Toolchain](./02-toolchain)
- - Lecture: SSH basics -- sorry for the awful sound ): Last year lecture is uploaded, hope that helps...
+ - Lecture: SSH basics
  - Lab: Ansible basics
 
 [Week 3: Web server](./03-web-server)
