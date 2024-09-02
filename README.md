@@ -2,7 +2,7 @@
 
 Course rules: [link](rules.md).
 
-Video lectures: [link](TODO).
+Video lectures: [link](https://echo360.org.uk/section/79b76ffb-7d59-42af-a149-d5135a1d76bb/public).
 
 [Discord](https://discord.com/download) channel invite: [link](TODO).
 
