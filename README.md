@@ -4,7 +4,7 @@ Course rules: [link](rules.md).
 
 Video lectures: [link](https://echo360.org.uk/section/79b76ffb-7d59-42af-a149-d5135a1d76bb/public).
 
-[Discord](https://discord.com/download) channel invite: [link](https://discord.gg/9M6fsjGj).
+[Discord](https://discord.com/download) channel invite: [link](https://discord.gg/s7rW2FSV).
 
 Virtual machines: [link](http://193.40.156.67/students.html).
 
@@ -13,7 +13,7 @@ Class times:
  - Tuesday 17:30 -- room 221 -- lecture -- video is streamed&recorded
  - Tuesday 19:15 -- room 319 -- lab -- video is streamed&recorded
  - Wednesday 16:00 - room ??? -- lab
- - Wednesday 17:40 - root ??? -- lab
+ - Wednesday 17:40 - room ??? -- lab
 
 Lab task is presented on Tuesdays at 19:15. You can watch it live, or later any
 time that is convenient for you.
