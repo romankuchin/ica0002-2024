@@ -4,7 +4,7 @@ Course rules: [link](rules.md).
 
 Video lectures: [link](https://echo360.org.uk/section/79b76ffb-7d59-42af-a149-d5135a1d76bb/public).
 
-[Discord](https://discord.com/download) channel invite: [link](TODO).
+[Discord](https://discord.com/download) channel invite: [link](https://discord.gg/9M6fsjGj).
 
 Virtual machines: [link](http://193.40.156.67/students.html).
 
