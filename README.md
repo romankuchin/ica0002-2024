@@ -12,8 +12,8 @@ Class times:
 
  - Tuesday 17:30 -- room 221 -- lecture -- video is streamed&recorded
  - Tuesday 19:15 -- room 319 -- lab -- video is streamed&recorded
- - Wednesday 16:00 -- room ??? -- lab
- - Wednesday 17:40 -- room ??? -- lab
+ - Wednesday 16:00 -- room 219 -- lab
+ - Wednesday 17:40 -- room 219 -- lab
 
 Lab task is presented on Tuesdays at 19:15. You can watch it live, or later any
 time that is convenient for you.
