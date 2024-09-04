@@ -43,8 +43,8 @@ left menu, click `Add people` and add user `ica0002-bot` (here is its
 GitHub profile: [https://github.com/ica0002-bot](https://github.com/ica0002-bot)).
 
 Once you have completed all the steps above your repository should appear in
-[this list](http://193.40.156.67/students.html) automatically within 2..3
-minutes. If it does not, please ask the teachers for help.
+[this list](http://193.40.156.67/students.html) automatically after some time (up to 30m).
+If it does not, please ask the teachers for help.
 
 Note: You don't have to wait until your repository is added to this list, you
 can continue with the next task.
