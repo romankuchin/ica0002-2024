@@ -64,7 +64,7 @@ This should create the users on the managed hosts, and authorize their SSH keys,
 
 Self check:
  - SSH to your managed host
- - Ensure that the file `/home/juri/.ssh/.authorized_keys` exists and contains the keys from
+ - Ensure that the file `/home/juri/.ssh/authorized_keys` exists and contains the keys from
    https://github.com/hudolejev.keys
  - Ensure that the file `/home/roman/.ssh/authorized_keys` exists and contains the keys from
    https://github.com/romankuchin.keys
