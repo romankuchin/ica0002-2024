@@ -86,7 +86,7 @@ another for a standalone database server.
 
 Update your Ansible inventory file and make sure machine connection parameters are correct.
 
-Add the new host group `db_servers` to your inventory file. Add the new machine named "<yourname-2>"
+Add the new host group `db_servers` to your inventory file. Add the new machine named `<yourname>-2`
 there. Leave the old machine as member of the existing group `web_servers`.
 
 Once done your inventory file should look similar to this:
@@ -221,7 +221,7 @@ from the one that you have added to the inventory file:
  - you (and Ansible) connect to the _public_ IP (`193.40.156.67`) of the managed host
  - other hosts in the same network connect to _internal_ IP
 
-Plase use the "<yourname>-2" machine address; we defined it as database server in the task 2.
+Please use the `<yourname>-2` machine address; we defined it as database server in the task 2.
 
 Password **must** be encrypted. You can get the encrypted value using Ansible Vault you have set up
 in the task 1:
