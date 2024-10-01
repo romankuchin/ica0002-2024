@@ -1,0 +1,11 @@
+$TTL	604800
+zilla.rk.	IN	SOA	vm1.zilla.rk. roman.zilla.rk. (
+			      2		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+zilla.rk.	IN	NS	vm1
+vm1	IN	A	192.168.42.166
+vm2	IN	A	192.168.42.170
