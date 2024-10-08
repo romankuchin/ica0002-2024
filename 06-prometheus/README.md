@@ -22,7 +22,9 @@ Install Nginx and configure reverse proxy on VM with prometheus:
 
     /prometheus -> localhost:9090
 
-Hint: use Ansible variable "groups['prometheus']".
+Reuse existing `nginx` role.
+
+Hint: use Ansible variable "groups['prometheus']" for condition in nginx config.
 
 ## Task 4: Adjust Prometheus service
 
