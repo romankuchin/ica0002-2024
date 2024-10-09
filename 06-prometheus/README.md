@@ -65,7 +65,7 @@ Prometheus and Node Exporters are installed and configured with this command:
 Running the same command again does not make any changes to any of the managed
 hosts.
 
-After playbook execution all targets at \<your_VM_http_link\>/prometheus/targets should be `UP`: all VMs + prometheus itself.
+After playbook execution all targets at \<your_VM_http_link\>/prometheus/classic/targets should be `UP`: all VMs + prometheus itself.
 
 After playbook execution you should be able to query historical data from Prometheus web interface \<your_VM_http_link\>/prometheus/graph.
 
