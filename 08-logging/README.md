@@ -110,7 +110,7 @@ Your repository contains these files and directories:
     hosts
     infra.yaml
     roles/influxdb/tasks/main.yaml
-    roles/agama-client/tasks/main.yaml
+    roles/agama_client/tasks/main.yaml
 
 Your repository also contains all the required files from the previous labs.
 
