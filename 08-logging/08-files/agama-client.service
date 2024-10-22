@@ -1,0 +1,11 @@
+[Unit]
+Description=<FIXME>
+Documentation=<FIXME>
+After=network-online.target
+
+[Service]
+User=<FIXME>
+ExecStart=/usr/local/bin/<FIXME>
+
+[Install]
+WantedBy=multi-user.target

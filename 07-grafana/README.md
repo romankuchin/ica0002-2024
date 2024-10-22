@@ -28,7 +28,9 @@ Exporter tasks should be a part of `mysql` role.
 
 Install Bind9 exporter version 0.6.1 or newer.
 
-Put executable to `/usr/local/bin/`, put service definition to `/etc/systemd/system/`.
+Download archive to `/opt`.
+
+Create a link to executable: `/usr/local/bin/prometheus-bind-exporter` -> `/opt/...`, put service definition to `/etc/systemd/system/`.
 
 Don't forget to reload systemd after changing its config.
 
@@ -38,7 +40,7 @@ Docs: https://github.com/prometheus-community/bind_exporter
 
 Exporter tasks should be a part of `bind` role.
 
-Ansible modules to use: unarchive.
+Ansible modules to use: unarchive, file, template.
 
 ## Task 3: Install Nginx exporter
 
