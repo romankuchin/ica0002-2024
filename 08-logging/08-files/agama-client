@@ -9,7 +9,10 @@ for t in database_url database_name subnet; do
     fi
 done
 
-which fping > /dev/null || {logger "$0 fping not found"; exit 1;}
+if ! which fping > /dev/null; then
+    logger "$0 fping not found"
+    exit 1
+fi
 
 db_url=$(grep "^database_url=" /etc/agama-client/agama-client.conf | sed 's/^.*=//')
 db_name=$(grep "^database_name=" /etc/agama-client/agama-client.conf | sed 's/^.*=//')
@@ -21,7 +24,7 @@ while true; do
     for vm_ip in $(fping -g $subnet -a 2>/dev/null); do
         # Getting content of agama page
         content=$(curl --connect-timeout 1 -w "%{http_code}" -s $vm_ip)
-        if test ${content: -3} -ne 200; then
+        if test ${content:-3} -ne 200; then
             # nothing to do, going to next student
             continue
         fi
