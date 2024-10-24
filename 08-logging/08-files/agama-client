@@ -9,7 +9,7 @@ for t in database_url database_name subnet; do
     fi
 done
 
-which fping > /dev/null || {logger "$0 fping not found"; exit 1;}
+which fping > /dev/null || { logger "$0 fping not found"; exit 1; }
 
 db_url=$(grep "^database_url=" /etc/agama-client/agama-client.conf | sed 's/^.*=//')
 db_name=$(grep "^database_name=" /etc/agama-client/agama-client.conf | sed 's/^.*=//')
