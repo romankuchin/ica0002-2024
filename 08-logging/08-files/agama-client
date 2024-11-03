@@ -1,44 +1,100 @@
-#!/bin/bash
+#!/bin/sh -eu
 
-# Please help Dora to find problems in this script
+config_file=/etc/agama-client.conf
 
-for t in database_url database_name subnet; do
-    if ! grep -q "^${t}=" /etc/agama-client/agama-client.conf; then
-        logger "$0 Failed to get $t from config"
+logger -p local3.info "Starting..."
+
+if [ ! -f "$config_file" ]; then
+    logger -p local3.error "Configuration file not found: $config_file -- exiting..."
+    exit 1
+fi
+
+for i in influxdb_database influxdb_url subnet; do
+    if ! grep -q "^$i *=" "$config_file"; then
+        logger -p local3.error "Required configuration parameter $i is missing in the configuration file -- exiting..."
         exit 1
     fi
 done
 
-which fping > /dev/null || { logger "$0 fping not found"; exit 1; }
+if ! which fping > /dev/null; then
+    logger -p local3.error "fping not found -- exiting..."
+    exit 1
+fi
 
-db_url=$(grep "^database_url=" /etc/agama-client/agama-client.conf | sed 's/^.*=//')
-db_name=$(grep "^database_name=" /etc/agama-client/agama-client.conf | sed 's/^.*=//')
-subnet=$(grep "^subnet=" /etc/agama-client/agama-client.conf | sed 's/^.*=//')
+agama_url=$(grep "^agama_url *=" "$config_file" | sed 's/^.*= *//')
+influxdb_database=$(grep "^influxdb_database *=" "$config_file" | sed 's/^.*= *//')
+influxdb_url=$(grep "^influxdb_url *=" "$config_file" | sed 's/^.*= *//')
+subnet=$(grep "^subnet *=" "$config_file" | sed 's/^.*= *//')
 
-curl -i -XPOST "$db_url/query" --data-urlencode "q=CREATE DATABASE $db_name" 1>/dev/null 2>/dev/null || { logger "$0 Failed to create database"; exit 1; }
+if [ -n "$agama_url" ]; then
+    logger -p local3.info "agama_url: $agama_url"
+fi
+logger -p local3.info "influxdb_database: $influxdb_database"
+logger -p local3.info "influxdb_url: $influxdb_url"
+logger -p local3.info "subnet: $subnet"
+
+if ! curl -s -XPOST "$influxdb_url/query" --data-urlencode "q=CREATE DATABASE $influxdb_database" >/dev/null; then
+    logger -p local3.error "Failed to create database -- exiting..."
+    exit 1
+fi
 
 while true; do
-    for vm_ip in $(fping -g $subnet -a 2>/dev/null); do
-        # Getting content of agama page
-        content=$(curl --connect-timeout 1 -w "%{http_code}" -s $vm_ip)
-        if test ${content: -3} -ne 200; then
-            # nothing to do, going to next student
-            continue
+    my_content=""
+    if [ -n "$agama_url" ]; then
+        my_content=$(curl --connect-timeout 1 -w "%{http_code}" -s "$agama_url")
+        if ! echo "$my_content" | tail -1 | grep -q "200$"; then
+            my_content=""
         fi
-        # Getting where it's hosted
-        vm_name=$(echo "$content" | grep "running on" | awk '{print $5}')
-        # Number of items in agama
-        table_rows=$(echo "$content" | grep -c "</tr>")
-        # Write stats to inflixdb
-        curl -i -XPOST "${db_url}/write?db=$db_name" --data-binary "agama-stats,name=$vm_name items=$table_rows" 1>/dev/null 2>/dev/null
+    fi
+
+    my_vm_name=$(echo "$my_content" | grep "running on" | awk '{print $5}')
+
+    logger -p local3.info "Scanning subnet $subnet..."
+    for vm_ip in $(fping -aq -g "$subnet" -a); do
+        # Get content of their Agama page
+        their_content=$(curl --connect-timeout 1 -w "%{http_code}" -s "$vm_ip") || true
+        if ! echo "$their_content" | tail -1 | grep -q "200$"; then
+            continue  # Probably Agama is not responding
+        fi
+
+        # Get their Agama hostname
+        their_vm_name=$(echo "$their_content" | grep "running on" | awk '{print $5}')
+        if [ -z "$their_vm_name" ]; then
+            continue  # Probably not the Agama page
+        fi
+
+        # Get number of items in their Agama
+        item_count=$(echo "$their_content" | grep -c '<tr class="item-[01]">')
+
+        # Write their Agama stats to InfluxDB
+        logger -p local3.info "Writing $vm_ip stats into InfluxDB (name=$their_vm_name, items=$item_count)..."
+        if ! curl -s -XPOST "$influxdb_url/write?db=$influxdb_database" --data-binary "agama-stats,name=$their_vm_name items=$item_count"; then
+            logger -p local3.warning "Failed to write $vm_ip stats to InfluxDB -- skipping..."
+        fi
+
         # If hostname exists in agama - delete it
-        if $(echo "$content" | grep -q $(hostname)); then
-            for delete_url in $(echo "$content" | grep $(hostname) | grep -o '/items/.*/swap-state' | sed 's/swap-state/delete/'); do
-                curl -s $vm_ip$delete_url -o /dev/null
-            done
+        if [ -n "$my_content" ] && [ "$their_vm_name" != "$my_vm_name" ]; then
+            new_item="Agama on $their_vm_name has $item_count items"
+            logger -p local3.info "Writing $vm_ip stats into our Agama..."
+
+            current_item=$(echo "$my_content" | grep "<td class=\"item\"><a href=\".*\">Agama on $their_vm_name") || true
+            if [ -n "$current_item" ]; then
+                if echo "$current_item" | grep -q "$new_item"; then
+                    continue  # Already added with correct item count
+                fi
+
+                item_id=$(echo "$current_item" | sed -E 's|.*/items/([0-9]+)/swap-state.*|\1|')
+                if ! curl -s "$agama_url/items/$item_id/delete" >/dev/null; then
+                    logger -p local3.warning "Failed to delete $their_vm_name stats from Agama -- skipping..."
+                fi
+            fi
+
+            if ! curl -s -XPOST "$agama_url/items/add" -F new_item="$new_item" >/dev/null; then
+                logger -p local3.warning "Failed to add $their_vm_name stats to Agama -- skipping..."
+            fi
         fi
-        # Add new item to agama
-        curl -s -XPOST $vm_ip/items/add -F new_item="Checked from $(hostname) at $(date)" -o /dev/null
     done
+
+    logger -p local3.info "Done. Waiting for the next round..."
     sleep 300
 done
