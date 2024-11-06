@@ -22,7 +22,7 @@ Docs: https://docs.ansible.com/ansible/latest/collections/ansible/builtin/system
 
 agama-client script requires config file:
 
-    /etc/agama-client/agama-client.conf
+    /etc/agama-client.conf
 
 Example can be found in 08-files as well.
 
