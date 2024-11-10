@@ -31,14 +31,16 @@ while true; do
         table_rows=$(echo "$content" | grep -c "</tr>")
         # Write stats to inflixdb
         curl -i -XPOST "${db_url}/write?db=$db_name" --data-binary "agama-stats,name=$vm_name items=$table_rows" 1>/dev/null 2>/dev/null
+
+        # DISABLED -- breaks other people's Agamas; consider writing to own Agama instead // Juri
         # If hostname exists in agama - delete it
-        if $(echo "$content" | grep -q $(hostname)); then
-            for delete_url in $(echo "$content" | grep $(hostname) | grep -o '/items/.*/swap-state' | sed 's/swap-state/delete/'); do
-                curl -s $vm_ip$delete_url -o /dev/null
-            done
-        fi
+        #if $(echo "$content" | grep -q $(hostname)); then
+        #    for delete_url in $(echo "$content" | grep $(hostname) | grep -o '/items/.*/swap-state' | sed 's/swap-state/delete/'); do
+        #        curl -s $vm_ip$delete_url -o /dev/null
+        #    done
+        #fi
         # Add new item to agama
-        curl -s -XPOST $vm_ip/items/add -F new_item="Checked from $(hostname) at $(date)" -o /dev/null
+        #curl -s -XPOST $vm_ip/items/add -F new_item="Checked from $(hostname) at $(date)" -o /dev/null
     done
     sleep 300
 done
