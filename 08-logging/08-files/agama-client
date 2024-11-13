@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 
 # Please help Dora to find problems in this script
 
@@ -11,22 +11,38 @@ done
 
 which fping > /dev/null || { logger "$0 fping not found"; exit 1; }
 
+logger "Starting agama-client..."
+
 db_url=$(grep "^database_url=" /etc/agama-client/agama-client.conf | sed 's/^.*=//')
 db_name=$(grep "^database_name=" /etc/agama-client/agama-client.conf | sed 's/^.*=//')
 subnet=$(grep "^subnet=" /etc/agama-client/agama-client.conf | sed 's/^.*=//')
 
+if $(curl -s "$db_url/ping"); then
+    logger "Will push data to $db_url"
+else
+    logger "Failed to connect to $db_url"
+    exit 1
+fi
+
+logger "Creating database $db_name in $db_url"
 curl -i -XPOST "$db_url/query" --data-urlencode "q=CREATE DATABASE $db_name" 1>/dev/null 2>/dev/null || { logger "$0 Failed to create database"; exit 1; }
 
 while true; do
-    for vm_ip in $(fping -g $subnet -a 2>/dev/null); do
+    alive_hosts=$(fping -g $subnet -a 2>/dev/null || true)
+    logger "Discovered $(echo "$alive_hosts" | wc -l) IPs"
+    for vm_ip in $alive_hosts; do
         # Getting content of agama page
-        content=$(curl --connect-timeout 1 -w "%{http_code}" -s $vm_ip)
+        content=$(curl --connect-timeout 1 -w "%{http_code}" -s $vm_ip || continue)
         if test ${content: -3} -ne 200; then
             # nothing to do, going to next student
             continue
         fi
         # Getting where it's hosted
         vm_name=$(echo "$content" | grep "running on" | awk '{print $5}')
+        if [ -z $vm_name ]; then
+            # No agama running, skipping
+            continue
+        fi
         # Number of items in agama
         table_rows=$(echo "$content" | grep -c "</tr>")
         # Write stats to inflixdb
@@ -34,11 +50,13 @@ while true; do
         # If hostname exists in agama - delete it
         if $(echo "$content" | grep -q $(hostname)); then
             for delete_url in $(echo "$content" | grep $(hostname) | grep -o '/items/.*/swap-state' | sed 's/swap-state/delete/'); do
-                curl -s $vm_ip$delete_url -o /dev/null
+                curl -s $vm_ip$delete_url -o /dev/null || logger "Failed to delete $(hostname) from $vm_ip"
             done
         fi
         # Add new item to agama
-        curl -s -XPOST $vm_ip/items/add -F new_item="Checked from $(hostname) at $(date)" -o /dev/null
+        curl -s -XPOST $vm_ip/items/add -F new_item="Checked from $(hostname) at $(date)" -o /dev/null || logger "Failed to update Agama on $vm_ip"
+        logger "Posted check message to $vm_ip"
     done
+    logger "Waiting for the next cycle to start..."
     sleep 300
 done
