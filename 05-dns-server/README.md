@@ -97,7 +97,7 @@ Since now it is not allowed to use IP addresses in configuration files unless ex
 
 Don't forget to restart service after config changes. Use Ansible "service" module for that.
 
-Primary(master) zone file with DNS records is *not* a config file. After DB file update use command "rndc reload". You can use Ansible "command" module in a handler.
+~~Primary(master) zone file with DNS records is *not* a config file. After DB file update use command "rndc reload". You can use Ansible "command" module in a handler.~~
 
 Use "named-checkconf" to check syntax of your Bind9 configs. Use "named-checkzone" to check syntax of your zone files.
 
