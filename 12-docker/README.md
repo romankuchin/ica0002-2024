@@ -198,7 +198,7 @@ different).
 
  - you should see the Grafana login form there
  - use password set in `grafana.ini` to log in
- - all datasources (Prometheus, 2 x InfluxDB) and dashboards (Main, MySQL, Syslog) should be there
+ - all datasources (Prometheus, InfluxDB) and dashboards (Backups, Main, MySQL, Syslog) should be there
 
 If the dashboards or datasources are not there, re-check if you've done task 3 fully and correctly.
 
