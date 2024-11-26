@@ -134,7 +134,6 @@ Your repository contains these files:
 Your Agama application is accessible on VM-1 public HA URL.
 Even if almost all containers are down. Even if one HAproxy is stopped.
 Even if one Keepalived is stopped. Even if all together.
-Even if VM with mysql replica got rebooted or deleted.
 
 Your Agama application is accessible on both public non-HA URLs.
 
