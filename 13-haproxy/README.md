@@ -112,7 +112,7 @@ Make sure service `prometheus-keepalived-exporter` is running. Exporter user sho
 Add new metrics to your main Grafana dashboard. Should be panels for each node with those metrics:
   
   - haproxy_up (last value)
-  - haproxy_server_up (last value for each backend)
+  - haproxy_server_up (last value for each container)
   - keepalived_up (last value)
   - keepalived_vrrp_state (last value)
 
@@ -133,7 +133,7 @@ Your repository contains these files:
 
 Your Agama application is accessible on VM-1 public HA URL.
 Even if almost all containers are down. Even if one HAproxy is stopped.
-Even if one Keepalived is stopped. Even if all together.
+Even if one Keepalived is stopped.
 
 Your Agama application is accessible on both public non-HA URLs.
 
