@@ -94,7 +94,9 @@ Week 16: Exam
 ## Exam times
 
 3.01.2025 16:00 - Discord
+
 15.01.2025 16:00 - Discord
+
 21.01.2025 16:00 - Discord
 
 You can choose any 2 times to take the exam in addition to week 16 exam attempt, 3 attempts in total.
