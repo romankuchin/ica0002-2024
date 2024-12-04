@@ -84,8 +84,8 @@ Add new zone to your DNS servers: `168.192.in-addr.arpa`. It should have the sam
 
 Reverse zone has the same mandatory fields: SOA, NS, A records for NS. PTR records look like this:
 
-    42.166	IN	PTR	<vm1-name>.<your-domain>.
-    43.31	IN	PTR	<vm2-name>.<your-domain>.
+    166.42	IN	PTR	<vm1-name>.<your-domain>.
+    31.43	IN	PTR	<vm2-name>.<your-domain>.
 
 Docs: https://downloads.isc.org/isc/bind9/cur/9.18/doc/arm/Bv9ARM.pdf as usual.
 

@@ -43,6 +43,11 @@ while true; do
             # No agama running, skipping
             continue
         fi
+        ptr=$(host -W1 $vm_ip $vm_ip | awk '/domain name pointer/ {print $5}')
+        if ! [ -z "$ptr" ]; then
+            logger "Resolved $vm_ip to $ptr"
+            vm_name="$ptr"
+        fi
         # Number of items in agama
         table_rows=$(echo "$content" | grep -c "</tr>")
         # Write stats to inflixdb
