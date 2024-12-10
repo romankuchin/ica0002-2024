@@ -12,6 +12,8 @@ ansible-playbook infra.yaml --diff
 
 ansible all -b -m reboot -a "test_command=uptime"
 
+sleep 15
+
 ansible-playbook infra.yaml --diff
 
 date
