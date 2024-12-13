@@ -17,12 +17,15 @@ db_url=$(grep "^database_url=" /etc/agama-client/agama-client.conf | sed 's/^.*=
 db_name=$(grep "^database_name=" /etc/agama-client/agama-client.conf | sed 's/^.*=//')
 subnet=$(grep "^subnet=" /etc/agama-client/agama-client.conf | sed 's/^.*=//')
 
-if $(curl -s "$db_url/ping"); then
-    logger "Will push data to $db_url"
-else
-    logger "Failed to connect to $db_url"
-    exit 1
-fi
+for i in {1..30}; do
+    if $(curl -s "$db_url/ping"); then
+        logger "Will push data to $db_url"
+        break
+    else
+        logger "Failed to connect to $db_url. InfluxDB is not running? ($i)"
+        sleep 5
+    fi
+done
 
 logger "Creating database $db_name in $db_url"
 curl -i -XPOST "$db_url/query" --data-urlencode "q=CREATE DATABASE $db_name" 1>/dev/null 2>/dev/null || { logger "$0 Failed to create database"; exit 1; }
